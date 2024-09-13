@@ -5,10 +5,10 @@ import Team from "./Team";
 
 function PricingPage() {
   return (
-    <>
+    <div className="comp">
       <Hero />
       <Team />
-    </>
+    </div>
   );
 }
 

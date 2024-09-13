@@ -5,11 +5,11 @@ import OpenAccount from "../OpenAccount";
 
 function PricingPage() {
   return (
-    <>
+    <div className="comp">
       <Hero />
       <OpenAccount />
       <Brokerage />
-    </>
+    </div>
   );
 }
 

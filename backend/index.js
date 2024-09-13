@@ -1,25 +1,47 @@
 require("dotenv").config();
 
 const express = require("express");
+const app = express();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+app.use(bodyParser.json());
 const cors = require("cors");
+app.use(cors());
 
-const { HoldingsModel } = require("./model/HoldingsModel");
+const Holding = require("./model/holdings");
+const Position = require("./model/positions");
+const User = require("./model/user.js");
 
-const { PositionsModel } = require("./model/PositionsModel");
-const { OrdersModel } = require("./model/OrdersModel");
-
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 3000;
 const uri = process.env.MONGO_URL;
 
-const app = express();
+app.use(express.urlencoded({ extended: true }));
 
-app.use(cors());
-app.use(bodyParser.json());
 
-// app.get("/addHoldings", async (req, res) => {
-//   let tempHoldings = [
+
+// express-session
+const session = require('express-session');
+app.use(session({
+  secret: 'secretCode',
+  resave: false,
+  saveUninitialized: true,
+  // cookie: { secure: true }
+}))
+
+
+// AUTHENTICATION
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
+// initializing sample data in DB
+// app.get("/holdings", async (req, res) => {
+//   let data = [
 //     {
 //       name: "BHARTIARTL",
 //       qty: 2,
@@ -51,7 +73,6 @@ app.use(bodyParser.json());
 //       price: 1555.45,
 //       net: "+15.18%",
 //       day: "-1.60%",
-//       isLoss: true,
 //     },
 //     {
 //       name: "ITC",
@@ -76,7 +97,6 @@ app.use(bodyParser.json());
 //       price: 779.8,
 //       net: "-3.72%",
 //       day: "-0.01%",
-//       isLoss: true,
 //     },
 //     {
 //       name: "RELIANCE",
@@ -93,7 +113,6 @@ app.use(bodyParser.json());
 //       price: 430.2,
 //       net: "+32.63%",
 //       day: "-0.34%",
-//       isLoss: true,
 //     },
 //     {
 //       name: "SGBMAY29",
@@ -110,7 +129,6 @@ app.use(bodyParser.json());
 //       price: 124.15,
 //       net: "+19.15%",
 //       day: "-0.24%",
-//       isLoss: true,
 //     },
 //     {
 //       name: "TCS",
@@ -119,7 +137,6 @@ app.use(bodyParser.json());
 //       price: 3194.8,
 //       net: "+5.03%",
 //       day: "-0.25%",
-//       isLoss: true,
 //     },
 //     {
 //       name: "WIPRO",
@@ -131,23 +148,7 @@ app.use(bodyParser.json());
 //     },
 //   ];
 
-//   tempHoldings.forEach((item) => {
-//     let newHolding = new HoldingsModel({
-//       name: item.name,
-//       qty: item.qty,
-//       avg: item.avg,
-//       price: item.price,
-//       net: item.day,
-//       day: item.day,
-//     });
-
-//     newHolding.save();
-//   });
-//   res.send("Done!");
-// });
-
-// app.get("/addPositions", async (req, res) => {
-//   let tempPositions = [
+//   let dataPositions = [
 //     {
 //       product: "CNC",
 //       name: "EVEREADY",
@@ -169,46 +170,49 @@ app.use(bodyParser.json());
 //       isLoss: true,
 //     },
 //   ];
+  
 
-//   tempPositions.forEach((item) => {
-//     let newPosition = new PositionsModel({
-//       product: item.product,
-//       name: item.name,
-//       qty: item.qty,
-//       avg: item.avg,
-//       price: item.price,
-//       net: item.net,
-//       day: item.day,
-//       isLoss: item.isLoss,
-//     });
+//   await Holding.deleteMany({});
+//   await Holding.insertMany(data);
 
-//     newPosition.save();
-//   });
-//   res.send("Done!");
+//   await Position.deleteMany({});
+//   await Position.insertMany(dataPositions);
+
+  
+
+//   res.send(await Holding.find());
 // });
 
-app.get("/allHoldings", async (req, res) => {
-  let allHoldings = await HoldingsModel.find({});
+
+
+app.get("/holdings", async (req, res) => {
+  let allHoldings = await Holding.find({});
   res.json(allHoldings);
 });
 
-app.get("/allPositions", async (req, res) => {
-  let allPositions = await PositionsModel.find({});
+app.get("/positions", async (req, res) => {
+  let allPositions = await Position.find({});
   res.json(allPositions);
 });
 
-app.post("/newOrder", async (req, res) => {
-  let newOrder = new OrdersModel({
-    name: req.body.name,
-    qty: req.body.qty,
-    price: req.body.price,
-    mode: req.body.mode,
-  });
-
-  newOrder.save();
-
-  res.send("Order saved!");
+app.post("/signup", (req, res) => {
+  res.send("Good");
 });
+
+
+
+// app.post("/newOrder", async (req, res) => {
+//   let newOrder = new OrdersModel({
+//     name: req.body.name,
+//     qty: req.body.qty,
+//     price: req.body.price,
+//     mode: req.body.mode,
+//   });
+
+//   newOrder.save();
+
+//   res.send("Order saved!");
+// });
 
 app.listen(PORT, () => {
   console.log("App started!");

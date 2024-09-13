@@ -3,7 +3,7 @@ import React from "react";
 function Footer() {
   return (
     <footer style={{ backgroundColor: "rgb(250, 250, 250)" }}>
-      <div className="container border-top mt-5">
+      <div className="container border-top mt-5 footer">
         <div className="row mt-5">
           <div className="col">
             <img src="media/images/logo.svg" style={{ width: "50%" }} />
@@ -12,7 +12,7 @@ function Footer() {
             </p>
           </div>
           <div className="col">
-            <p>Company</p>
+            <p><b>Company</b></p>
             <a href="">About</a>
             <br />
             <a href="">Products</a>
@@ -31,7 +31,7 @@ function Footer() {
             <br />
           </div>
           <div className="col">
-            <p>Support</p>
+            <p><b>Support</b></p>
             <a href="">Contact</a>
             <br />
             <a href="">Support portal</a>
@@ -44,7 +44,7 @@ function Footer() {
             <br />
           </div>
           <div className="col">
-            <p>Account</p>
+            <p><b>Account</b></p>
             <a href="">Open an account</a>
             <br />
             <a href="">Fund transfer</a>

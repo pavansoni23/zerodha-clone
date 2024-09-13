@@ -5,12 +5,10 @@ import LeftSection from "./LeftSection";
 import RightSection from "./RightSection";
 import Universe from "./Universe";
 
-import Navbar from "../Navbar";
-import Footer from "../Footer";
 
 function PricingPage() {
   return (
-    <>
+    <div className="comp">
       <Hero />
       <LeftSection
         imageURL="media/images/kite.png"
@@ -56,7 +54,7 @@ function PricingPage() {
         blog.
       </p>
       <Universe />
-    </>
+    </div>
   );
 }
 
